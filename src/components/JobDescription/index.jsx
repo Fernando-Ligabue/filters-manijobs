@@ -10,7 +10,7 @@ const infoText = function removerTagsHTML(html) {
 function formatarData(dataString) {
   const data = new Date(dataString);
   const dia = String(data.getDate()).padStart(2, "0");
-  const mes = String(data.getMonth() + 1).padStart(2, "0"); // Mês é baseado em zero
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
   const ano = data.getFullYear();
   return `${dia}/${mes}/${ano}`;
 }
@@ -21,39 +21,21 @@ const JobDescription = () => {
   const jobId = params.id;
   const job = jobs.find((job) => job.id === jobId) || jobs[0];
 
-  const ofertaTexto = infoText(job.oferta);
-  // const anuncioTexto = infoText(job.anuncio);
-  const funcoesTexto = infoText(job.funcoes);
-  const requisitosTexto = infoText(job.requisitos);
-
-  const insertBreakRow = function (texto) {
-    const textDivided = texto.split(";");
-    if (textDivided.length > 1) {
-      return textDivided.map((item, index) => (
-        <React.Fragment key={index}>
-          {index !== 0 && <br />}
-          {item}
-        </React.Fragment>
-      ));
-    } else {
-      return texto;
-    }
+  const insertBreakRow = function(texto) {
+    const textDivided = texto.split(';');
+    return textDivided.map((item, index) => (
+      <React.Fragment key={index}>
+        {index !== 0 && <br />}
+        {item}
+      </React.Fragment>
+    ));
   };
 
-  const ofertaWithBreakRow = insertBreakRow(ofertaTexto);
-  const funcoesWithBreakRow = insertBreakRow(funcoesTexto);
-  const requisitosWithBreakRow = insertBreakRow(requisitosTexto);
+
 
   const inicioOferta = formatarData(job.inicio_oferta);
-  // const fimOferta = formatarData(job.fim_oferta);
-  // const inicioJob = formatarData(job.comeco);
-  const dataInicio = new Date(job.inicio_oferta);
-  const dataAtual = new Date();
-  const diferencaEmMilissegundos = dataAtual - dataInicio;
-  const diferencaEmDias = Math.floor(
-    diferencaEmMilissegundos / (1000 * 60 * 60 * 24)
-  );
-  const novoAnuncio = diferencaEmDias < 7;
+  const novoAnuncio = new Date() - new Date(job.inicio_oferta) < 7 * 24 * 60 * 60 * 1000;
+
 
   return (
     <div
@@ -81,21 +63,13 @@ const JobDescription = () => {
           <div className="flex flex-col items-start gap-2 mt-2">
             <p className="text-[12px] font-light text-white">Descrição</p>
             <span className="text-[11px] font-regular text-white">
-              {funcoesWithBreakRow.length === 0
-                ? " - Sem informações"
-                : funcoesWithBreakRow.map((item, index) => (
-                    <span key={index}>{item}</span>
-                  ))}
+            {job.oferta.length <= 1 ? "- Sem informações" : insertBreakRow(infoText(job.oferta))}
             </span>
           </div>
           <div className="flex flex-col items-start gap-2 mt-2">
             <p className="text-[12px] font-light text-white">Requisitos</p>
             <span className="text-[11px] font-regular text-white">
-              {requisitosWithBreakRow.length === 0
-                ? " - Sem informações"
-                : requisitosWithBreakRow.map((item, index) => (
-                    <span key={index}>{item}</span>
-                  ))}
+            {job.requisitos.length <= 1 ? "- Sem informações" : insertBreakRow(infoText(job.requisitos))}
             </span>
           </div>
           <div className="flex items-center gap-2 mt-2 bg-white">
@@ -114,11 +88,7 @@ const JobDescription = () => {
           <div className="flex flex-col items-start gap-2 mt-2">
             <p className="text-[12px] font-light text-white">Condições</p>
             <span className="text-[11px] font-regular text-white">
-              {ofertaWithBreakRow.length === 0
-                ? " - Sem informações"
-                : ofertaWithBreakRow.map((item, index) => (
-                    <span key={index}>{item}</span>
-                  ))}
+            {job.funcoes.length <= 1 ? "- Sem informações" : insertBreakRow(infoText(job.funcoes))}
             </span>
           </div>
           <div className="flex justify-between gap-4 w-full">
@@ -130,7 +100,6 @@ const JobDescription = () => {
               Voltar
             </button>
           </div>
-          {/* <Div class=""> </div>*/}
         </div>
       </div>
     </div>
