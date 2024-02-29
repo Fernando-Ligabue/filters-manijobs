@@ -1,29 +1,137 @@
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { jobs } from "../../Data/jobs";
+import React from "react";
+
+const infoText = function removerTagsHTML(html) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return doc.body.textContent || "";
+};
+
+function formatarData(dataString) {
+  const data = new Date(dataString);
+  const dia = String(data.getDate()).padStart(2, "0");
+  const mes = String(data.getMonth() + 1).padStart(2, "0"); // Mês é baseado em zero
+  const ano = data.getFullYear();
+  return `${dia}/${mes}/${ano}`;
+}
 
 const JobDescription = () => {
+  const navigate = useNavigate();
   const params = useParams();
   const jobId = params.id;
-  const job = jobs.find(job => job.id === jobId) || jobs[0];
+  const job = jobs.find((job) => job.id === jobId) || jobs[0];
+
+  const ofertaTexto = infoText(job.oferta);
+  // const anuncioTexto = infoText(job.anuncio);
+  const funcoesTexto = infoText(job.funcoes);
+  const requisitosTexto = infoText(job.requisitos);
+
+  const insertBreakRow = function (texto) {
+    const textDivided = texto.split(";");
+    if (textDivided.length > 1) {
+      return textDivided.map((item, index) => (
+        <React.Fragment key={index}>
+          {index !== 0 && <br />}
+          {item}
+        </React.Fragment>
+      ));
+    } else {
+      return texto;
+    }
+  };
+
+  const ofertaWithBreakRow = insertBreakRow(ofertaTexto);
+  const funcoesWithBreakRow = insertBreakRow(funcoesTexto);
+  const requisitosWithBreakRow = insertBreakRow(requisitosTexto);
+
+  const inicioOferta = formatarData(job.inicio_oferta);
+  // const fimOferta = formatarData(job.fim_oferta);
+  // const inicioJob = formatarData(job.comeco);
+  const dataInicio = new Date(job.inicio_oferta);
+  const dataAtual = new Date();
+  const diferencaEmMilissegundos = dataAtual - dataInicio;
+  const diferencaEmDias = Math.floor(
+    diferencaEmMilissegundos / (1000 * 60 * 60 * 24)
+  );
+  const novoAnuncio = diferencaEmDias < 7;
 
   return (
-    <div className="w-full xl:w-[95%] flex flex-col gap-8">
-      <div className="w-full flex items-start gap-5 bg-white rounded-lg p-9 shadow-sm border border-gray-200 flex-col">
-        <span className="text-sky-700 font-semibold text-xl">{job.titulo}</span>
-        <p
-          className="text-gray-600 leading-7"></p>
-        <p className="text-sky-700 text-[15px] font-medium">
-          O que precisas para desempenhar suas funções:
-        </p>
-        <p
-          className="text-gray-600 leading-7"
-          dangerouslySetInnerHTML={{ __html: job.requirements || "" }}
-        ></p>
-        <p className="text-sky-700 text-[15px] font-medium">Sobre Nós</p>
-        <p
-          className="text-gray-600 leading-7"
-          dangerouslySetInnerHTML={{ __html: job.about || "" }}
-        ></p>
+    <div
+      key={job.id}
+      className="w-full bg-gradient-to-b from-sky-800 to-sky-700 mb-5 
+      flex flex-col items-center justify-between gap-5 py-4 px-4 md:px-8 pb-8"
+    >
+      <div className="w-full flex md:flex-row flex-col md:items-center items-start gap-6 relative">
+        <div className="w-full flex flex-col gap-[6px] items-start">
+          {novoAnuncio && (
+            <span className="absolute top-1 right-1 text-white px-2 py-1 text-[8px] border rounded-none">
+              Novo
+            </span>
+          )}
+          <div className="flex flex-col items-start gap-2 mt-6">
+            <span className="w-full flex justify-between items-center font-semibold text-white text-[18px]">
+              {job.titulo}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[14px] font-medium text-white">
+              {job.local}, {inicioOferta}
+            </span>
+          </div>
+          <div className="flex flex-col items-start gap-2 mt-2">
+            <p className="text-[12px] font-light text-white">Descrição</p>
+            <span className="text-[11px] font-regular text-white">
+              {funcoesWithBreakRow.length === 0
+                ? " - Sem informações"
+                : funcoesWithBreakRow.map((item, index) => (
+                    <span key={index}>{item}</span>
+                  ))}
+            </span>
+          </div>
+          <div className="flex flex-col items-start gap-2 mt-2">
+            <p className="text-[12px] font-light text-white">Requisitos</p>
+            <span className="text-[11px] font-regular text-white">
+              {requisitosWithBreakRow.length === 0
+                ? " - Sem informações"
+                : requisitosWithBreakRow.map((item, index) => (
+                    <span key={index}>{item}</span>
+                  ))}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 mt-2 bg-white">
+            {job.entrada_imediata === "0" ? (
+              <span
+                className="text-[11px] px-2 py-1 font-regular  
+              bg-gradient-to-r from-yellow-500  to-yellow-600 
+              inline-block text-transparent bg-clip-text"
+              >
+                Disponibilidade Imediata
+              </span>
+            ) : (
+              <span className="text-[11px] px-2 py-1 font-regular"></span>
+            )}
+          </div>
+          <div className="flex flex-col items-start gap-2 mt-2">
+            <p className="text-[12px] font-light text-white">Condições</p>
+            <span className="text-[11px] font-regular text-white">
+              {ofertaWithBreakRow.length === 0
+                ? " - Sem informações"
+                : ofertaWithBreakRow.map((item, index) => (
+                    <span key={index}>{item}</span>
+                  ))}
+            </span>
+          </div>
+          <div className="flex justify-between gap-4 w-full">
+            <button
+              onClick={() => navigate(`/`)}
+              className="text-white font-medium text-[12px] rounded-md border border-1 
+            border-white w-[150px] h-10 p-1 mt-3"
+            >
+              Voltar
+            </button>
+          </div>
+          {/* <Div class=""> </div>*/}
+        </div>
       </div>
     </div>
   );

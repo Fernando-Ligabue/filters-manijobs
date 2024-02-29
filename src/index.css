@@ -9,7 +9,7 @@ body {
   margin: 0;
   min-width: 100vw;
   min-height: 100vh;
-  background-color: #F7F8Fa;
+  background-color: #FFF;
   overflow-x: hidden;
   scroll-behavior: smooth !important;
 }

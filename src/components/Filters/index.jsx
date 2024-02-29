@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -12,7 +13,7 @@ const Filters = ({ onFilterChange, jobs }) => {
     localidades: [],
   });
 
-  const [dropdownArea, setDropdownArea] = useState(true);
+  const [dropdownArea, setDropdownArea] = useState(false);
   const [dropdownFuncao, setDropdownFuncao] = useState(false);
   const [dropdownLocalidade, setDropdownLocalidade] = useState(false);
 
@@ -72,11 +73,11 @@ const Filters = ({ onFilterChange, jobs }) => {
   
 
   return (
-    <div className="md:sticky relative md:top-10 md:w-[500px] w-full p-1">
+    <div className="md:sticky relative md:top-10 md:w-[500px] w-full p-1 mt-11">
       <span className="text-gray-800 font-semibold text-[18px] mx-2">
         Filtros
       </span>
-      <div className="w-full bg-white mt-5 rounded-lg p-5 border border-gray-200">
+      <div className="w-full mt-5 p-5 ">
         <div className="w-full flex items-center justify-end">
           <span
             className="cursor-pointer text-red-500 font-light text-[10px]"
@@ -85,9 +86,9 @@ const Filters = ({ onFilterChange, jobs }) => {
             Limpar Filtros
           </span>
         </div>
-        <div className="w-full flex md:flex-col flex-row justify-between gap-4 mt-5">
+        <div className="w-full flex flex-col justify-between gap-4 mt-5">
           <div className="flex flex-col gap-4">
-            <span className="text-gray-800 font-semibold text-[14px] cursor-pointer w-full flex justify-between items-center "
+            <span className="text-gray-800 font-semibold text-[14px] cursor-pointer w-full flex justify-between items-center border-t-2 border-zinc-900 pt-5"
             onClick={toggleDropdownArea}>
               Área
               {dropdownArea ? <FaChevronUp /> : <FaChevronDown /> }
@@ -113,7 +114,7 @@ const Filters = ({ onFilterChange, jobs }) => {
             )}
           </div>
           <div className="flex flex-col gap-4">
-          <span className="text-gray-800 font-semibold text-[14px] cursor-pointer w-full flex justify-between items-center "
+          <span className="text-gray-800 font-semibold text-[14px] cursor-pointer w-full flex justify-between items-center border-t-2 border-zinc-900 pt-5"
             onClick={toggleDropdownFuncao}>
               Função
               {dropdownFuncao ? <FaChevronUp /> : <FaChevronDown /> }
@@ -139,7 +140,7 @@ const Filters = ({ onFilterChange, jobs }) => {
             )}
           </div>
           <div className="flex flex-col gap-4">
-          <span className="text-gray-800 font-semibold text-[14px] cursor-pointer w-full flex justify-between items-center "
+          <span className="text-gray-800 font-semibold text-[14px] cursor-pointer w-full flex justify-between items-center border-t-2 border-zinc-900 pt-5"
             onClick={toggleDropdownLocalidade}>
               Localidade
               {dropdownLocalidade ? <FaChevronUp /> : <FaChevronDown /> }
